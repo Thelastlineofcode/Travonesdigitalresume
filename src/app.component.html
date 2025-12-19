@@ -1,0 +1,336 @@
+<div class="min-h-screen relative overflow-x-hidden text-slate-200">
+  
+  <!-- Dynamic Background Orbs -->
+  <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-teal-900/20 rounded-full blur-[120px] animate-blob"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-900/20 rounded-full blur-[120px] animate-blob animation-delay-2000"></div>
+    <div class="absolute top-[40%] left-[40%] w-[400px] h-[400px] bg-purple-900/10 rounded-full blur-[100px] animate-blob animation-delay-4000"></div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 py-8 lg:py-12">
+    
+    <!-- Header / Nav (Mobile) -->
+    <header class="lg:hidden mb-8 flex items-center justify-between">
+      <h1 class="text-2xl font-bold tracking-tighter text-white">TB<span class="text-teal-400">.</span></h1>
+      <button (click)="printResume()" class="text-sm font-mono text-teal-400 border border-teal-500/30 px-3 py-1 rounded bg-teal-950/30">Download PDF</button>
+    </header>
+
+    <!-- Bento Grid Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-min">
+      
+      <!-- 1. Profile Card (Large Vertical Block) -->
+      <div class="md:col-span-4 lg:col-span-3 row-span-2 glass-card rounded-3xl p-6 flex flex-col items-center text-center relative overflow-hidden group">
+        <!-- Decoration -->
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500"></div>
+        
+        <!-- Profile Image with Glow -->
+        <div class="relative w-48 h-48 mb-6 mt-4">
+          <div class="absolute inset-0 bg-teal-500 rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+          <!-- NOTE: Standard img tag used for better compatibility with local assets in this environment -->
+          <img 
+            [src]="profileImage" 
+            width="400" 
+            height="400" 
+            class="relative w-full h-full object-cover rounded-full border-2 border-slate-700 group-hover:border-teal-400/50 transition-colors duration-300 shadow-2xl bg-slate-900"
+            alt="Travone Butler"
+          >
+          <div class="absolute bottom-2 right-2 w-5 h-5 bg-teal-500 rounded-full border-4 border-slate-900 z-10 animate-pulse"></div>
+        </div>
+
+        <h1 class="text-3xl font-black text-white tracking-tight mb-2 uppercase">{{ profile.name }}</h1>
+        <p class="text-teal-400 font-mono text-sm mb-6">{{ profile.title }}</p>
+
+        <div class="w-full space-y-3 text-sm text-slate-400 mb-8">
+           <div class="flex items-center gap-3 bg-slate-900/50 p-3 rounded-lg border border-slate-800/50 hover:border-teal-500/30 transition-colors">
+              <svg class="w-4 h-4 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span>{{ profile.location }}</span>
+           </div>
+           <a href="mailto:{{profile.email}}" class="flex items-center gap-3 bg-slate-900/50 p-3 rounded-lg border border-slate-800/50 hover:border-teal-500/30 transition-colors cursor-pointer hover:text-white">
+              <svg class="w-4 h-4 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              <span class="truncate">{{ profile.email }}</span>
+           </a>
+           <a href="https://{{profile.github}}" target="_blank" class="flex items-center gap-3 bg-slate-900/50 p-3 rounded-lg border border-slate-800/50 hover:border-teal-500/30 transition-colors cursor-pointer hover:text-white">
+              <svg class="w-4 h-4 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0 3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+              <span class="truncate">{{ profile.github }}</span>
+           </a>
+        </div>
+
+        <button (click)="printResume()" class="mt-auto w-full py-3 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-teal-900/50 flex items-center justify-center gap-2 group-hover:scale-[1.02]">
+           <span>Download Resume</span>
+           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        </button>
+      </div>
+
+      <!-- 2. AI Demo Console (Interactive Centerpiece) -->
+      <div class="md:col-span-8 lg:col-span-9 glass-card rounded-3xl p-1 overflow-hidden flex flex-col">
+        <div class="bg-slate-950/80 p-4 border-b border-slate-800 flex items-center justify-between">
+           <div class="flex items-center gap-2">
+             <div class="w-3 h-3 rounded-full bg-red-500"></div>
+             <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+             <div class="w-3 h-3 rounded-full bg-green-500"></div>
+             <span class="ml-3 font-mono text-xs text-slate-500">yung-obi-terminal v1.0.4</span>
+           </div>
+           <div class="flex items-center gap-2 text-teal-500/50 text-xs font-mono uppercase">
+              <span class="animate-pulse">● Connected to Sidereal Engine</span>
+           </div>
+        </div>
+        
+        <div class="p-6 md:p-8 flex-1 bg-gradient-to-br from-slate-900 to-slate-950">
+           <h2 class="text-xl text-white font-bold mb-6 flex items-center gap-2">
+             <span class="text-teal-400">>></span> Yung Obi - Sidereal AI Astrologer
+           </h2>
+           
+           <!-- Stacked Layout: Controls Top, Terminal Bottom -->
+           <div class="flex flex-col gap-6 h-full">
+              
+              <!-- Top Section: Controls & Agents -->
+              <div class="space-y-6">
+                 <p class="text-slate-400 text-sm leading-relaxed max-w-3xl">
+                   Interact with <strong>Yung Obi</strong>. Ask about planetary transits, relationships, or career. The system exclusively calculates using the <strong>Sidereal Zodiac (Lahiri Ayanamsa)</strong>.
+                 </p>
+                 
+                 <!-- Input -->
+                 <div class="relative group max-w-2xl">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-teal-500 to-blue-600 rounded-lg blur opacity-30 group-hover:opacity-75 transition duration-500"></div>
+                    <div class="relative flex">
+                      <input 
+                        #promptInput
+                        [value]="demoPrompt()"
+                        type="text" 
+                        class="w-full bg-slate-900 text-white px-4 py-3 rounded-l-lg border border-r-0 border-slate-700 focus:outline-none focus:ring-0 placeholder:text-slate-600 font-mono text-sm"
+                        placeholder="e.g. Explain my Mars placement in Sidereal Cancer"
+                        (keyup.enter)="runAgentSimulation(promptInput.value)"
+                        [disabled]="isSimulating()"
+                      >
+                      <button 
+                        (click)="runAgentSimulation(promptInput.value)"
+                        [disabled]="isSimulating()"
+                        class="bg-slate-800 hover:bg-slate-700 text-teal-400 px-6 py-3 rounded-r-lg border border-l-0 border-slate-700 font-bold text-sm uppercase tracking-wide transition-colors whitespace-nowrap">
+                        Ask Obi
+                      </button>
+                    </div>
+                 </div>
+
+                 <!-- Agents Vis (Horizontal Row) -->
+                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+                    @for (agent of agents; track agent.id) {
+                       <div class="p-3 rounded-lg border transition-all duration-300 flex items-center gap-3"
+                            [class]="activeAgentId() === agent.id 
+                               ? 'bg-slate-800/80 ' + agent.ringColor + ' border shadow-lg scale-105' 
+                               : 'bg-slate-900/40 border-slate-800 opacity-50'">
+                          <div class="w-8 h-8 rounded bg-slate-950 flex items-center justify-center shrink-0 {{agent.color}}">
+                             <!-- Icons -->
+                             @if(agent.icon === 'brain') { <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg> }
+                             @if(agent.icon === 'server') { <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg> }
+                             @if(agent.icon === 'code') { <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg> }
+                             @if(agent.icon === 'shield') { <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> }
+                             @if(agent.icon === 'star') { <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg> }
+                          </div>
+                          <div>
+                             <div class="text-xs font-bold text-slate-300 uppercase truncate">{{agent.name}}</div>
+                             <div class="text-[10px] text-slate-500 font-mono truncate">{{agent.role}}</div>
+                          </div>
+                       </div>
+                    }
+                 </div>
+              </div>
+
+              <!-- Bottom Section: Terminal Output (Full Width) -->
+              <div #terminalContainer class="bg-black/90 rounded-lg border border-slate-700 p-4 font-mono text-sm overflow-y-auto h-72 shadow-2xl relative w-full">
+                 <div class="absolute top-2 right-2 px-2 py-0.5 bg-slate-900 rounded text-[10px] text-slate-400 border border-slate-800">Sidereal_Log</div>
+                 <div class="space-y-3 mt-4">
+                    @if (simulationLogs().length === 0) {
+                      <div class="text-slate-500 italic flex items-center gap-2">
+                        <span class="animate-pulse w-2 h-4 bg-teal-500 block"></span>
+                        // Yung Obi Sidereal System ready. Waiting for query...
+                      </div>
+                    }
+                    @for (log of simulationLogs(); track log.message) {
+                       <div class="flex gap-3 animate-fadeIn">
+                          <span class="text-teal-500 font-bold shrink-0 mt-0.5">></span>
+                          <div class="flex flex-col">
+                             <span class="text-purple-400 text-xs font-bold mb-0.5 uppercase tracking-wider">[{{log.agent}}]</span>
+                             <span [class]="log.type === 'success' ? 'text-green-400 font-semibold' : log.type === 'warning' ? 'text-yellow-200' : 'text-slate-200'" class="leading-relaxed">
+                               {{log.message}}
+                             </span>
+                          </div>
+                       </div>
+                    }
+                    @if (isSimulating()) {
+                       <div class="animate-pulse text-teal-500 font-bold pl-2">_</div>
+                    }
+                 </div>
+              </div>
+           </div>
+        </div>
+      </div>
+
+      <!-- 3. Summary Block -->
+      <div class="md:col-span-8 lg:col-span-6 glass-card rounded-3xl p-8 relative overflow-hidden">
+         <div class="absolute -right-10 -top-10 w-40 h-40 bg-teal-500/10 rounded-full blur-3xl"></div>
+         <h2 class="text-xl font-bold text-white mb-4">Professional Summary</h2>
+         <p class="text-slate-300 leading-relaxed text-lg font-light">
+           {{ profile.summary }}
+         </p>
+      </div>
+
+      <!-- 4. Stats/Highlights Block -->
+      <div class="md:col-span-4 lg:col-span-3 glass-card rounded-3xl p-6 flex flex-col justify-between">
+         <h3 class="text-sm font-mono text-slate-500 uppercase tracking-widest mb-4">Key Metrics</h3>
+         <div class="space-y-6">
+            @for (ach of aiAchievements; track ach.title) {
+               <div>
+                  <div class="text-2xl font-black text-white mb-1">{{ach.title.split(' ')[0]}} <span class="text-teal-500">{{ach.title.split(' ').slice(1).join(' ')}}</span></div>
+                  <div class="text-xs text-slate-400">{{ach.desc}}</div>
+               </div>
+            }
+         </div>
+      </div>
+
+      <!-- 5. Experience Timeline (Tall Block) -->
+      <div class="md:col-span-12 lg:col-span-8 glass-card rounded-3xl p-8">
+         <h2 class="text-xl font-bold text-white mb-8 flex items-center gap-3">
+            <span class="w-2 h-8 bg-teal-500 rounded-full"></span>
+            Experience
+         </h2>
+         <div class="space-y-12">
+            @for (job of experience; track job.company) {
+               <div class="relative pl-8 md:pl-0">
+                  <div class="md:flex gap-6 justify-between items-start group">
+                     <!-- Time/Company (Left on Desktop) -->
+                     <div class="md:w-1/3 mb-2 md:mb-0 md:text-right md:pr-8 md:border-r md:border-slate-800 relative">
+                        <div class="absolute right-[-37px] top-1.5 w-3 h-3 bg-slate-900 border-2 border-teal-500 rounded-full z-10 hidden md:block group-hover:bg-teal-500 transition-colors"></div>
+                        <div class="text-teal-400 font-mono text-xs mb-1">{{ job.period }}</div>
+                        <div class="text-white font-bold text-lg leading-tight">{{ job.company }}</div>
+                     </div>
+                     
+                     <!-- Details (Right on Desktop) -->
+                     <div class="md:w-2/3 pl-0 md:pl-4 relative">
+                        <!-- Mobile Dot -->
+                        <div class="absolute -left-[23px] top-2 w-3 h-3 bg-slate-900 border-2 border-teal-500 rounded-full md:hidden"></div>
+                        
+                        <div class="text-slate-200 font-medium mb-2">{{ job.role }}</div>
+                        <p class="text-slate-400 text-sm mb-4">{{ job.description }}</p>
+                        <ul class="space-y-1">
+                           @for (ach of job.achievements; track ach) {
+                              <li class="flex items-start gap-2 text-sm text-slate-500">
+                                 <span class="text-teal-500 mt-1">›</span>
+                                 {{ ach }}
+                              </li>
+                           }
+                        </ul>
+                     </div>
+                  </div>
+               </div>
+            }
+         </div>
+      </div>
+
+      <!-- 6. Skills Grid -->
+      <div class="md:col-span-12 lg:col-span-4 flex flex-col gap-6">
+         <!-- Skills Header -->
+         <div class="glass-card rounded-3xl p-6 bg-gradient-to-br from-teal-900/40 to-slate-900">
+            <h2 class="text-xl font-bold text-white">Technical Arsenal</h2>
+            <p class="text-sm text-teal-200/60 mt-2">Core competencies & frameworks</p>
+         </div>
+
+         @for (skillGroup of skills; track skillGroup.category) {
+            <div class="glass-card rounded-2xl p-5 hover:bg-slate-800/50 transition-colors group">
+               <div class="flex items-center gap-3 mb-3">
+                  <div class="text-teal-400 group-hover:text-white transition-colors">
+                     @if(skillGroup.icon === 'cpu') { <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg> }
+                     @if(skillGroup.icon === 'code') { <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg> }
+                     @if(skillGroup.icon === 'cloud') { <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg> }
+                     @if(skillGroup.icon === 'users') { <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg> }
+                  </div>
+                  <h3 class="font-bold text-slate-200">{{ skillGroup.category }}</h3>
+               </div>
+               <div class="flex flex-wrap gap-2">
+                  @for (item of skillGroup.items; track item) {
+                     <span class="text-xs font-mono bg-slate-900 border border-slate-700 px-2 py-1 rounded text-slate-400 group-hover:text-teal-300 group-hover:border-teal-500/30 transition-all cursor-default">
+                        {{ item }}
+                     </span>
+                  }
+               </div>
+            </div>
+         }
+      </div>
+
+      <!-- 7. Projects Gallery (Full Width) -->
+      <div class="md:col-span-12 glass-card rounded-3xl p-8">
+         <h2 class="text-xl font-bold text-white mb-6">Featured Projects</h2>
+         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @for (project of projects; track project.name) {
+               <div class="group bg-slate-900/50 rounded-xl overflow-hidden border border-slate-800 hover:border-teal-500/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(20,184,166,0.1)] flex flex-col">
+                  
+                  <!-- Visual Preview Area (Mockups) -->
+                  <div class="h-40 bg-slate-950 relative overflow-hidden flex items-center justify-center border-b border-slate-800">
+                     <!-- Interactive Scenery -->
+                     <div class="absolute inset-0 opacity-50 group-hover:opacity-100 transition-opacity">
+                        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-800 to-slate-950"></div>
+                     </div>
+
+                     <!-- Specific Mockups -->
+                     <div class="relative z-10 transform group-hover:scale-110 transition-transform duration-500">
+                        @if (project.name.includes('Levité') || project.name.includes('OBI')) {
+                           <!-- Astrology Ring -->
+                           <div class="w-24 h-24 rounded-full border border-teal-500/30 flex items-center justify-center animate-[spin_10s_linear_infinite]">
+                              <div class="w-16 h-16 rounded-full border border-dashed border-purple-500/50 animate-[spin_8s_linear_infinite_reverse]"></div>
+                              <div class="absolute w-2 h-2 bg-white rounded-full shadow-[0_0_10px_white]"></div>
+                           </div>
+                        } @else if (project.name.includes('Xcellent1')) {
+                           <!-- Lawn Grid -->
+                           <div class="w-24 h-20 bg-slate-100 rounded shadow-xl flex flex-col p-2 space-y-2 transform -rotate-3">
+                              <div class="h-2 w-12 bg-green-500 rounded"></div>
+                              <div class="h-8 w-full bg-slate-200 rounded"></div>
+                           </div>
+                        } @else {
+                           <!-- Code Block -->
+                           <div class="font-mono text-[10px] text-slate-500">
+                              <span class="text-purple-400">fn</span> main() &#123;<br>
+                              &nbsp;&nbsp;init_system();<br>
+                              &#125;
+                           </div>
+                        }
+                     </div>
+                  </div>
+
+                  <div class="p-6 flex-1 flex flex-col">
+                     <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-white group-hover:text-teal-400 transition-colors">{{ project.name }}</h3>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full border" 
+                           [class]="project.status === 'Live' ? 'border-emerald-500/30 text-emerald-400 bg-emerald-500/10' : 'border-amber-500/30 text-amber-400 bg-amber-500/10'">
+                           {{ project.status }}
+                        </span>
+                     </div>
+                     <p class="text-sm text-slate-400 mb-4 flex-1">{{ project.description }}</p>
+                     
+                     <div class="flex items-center justify-between mt-auto pt-4 border-t border-slate-800">
+                        <div class="flex gap-3">
+                           @if (project.link) {
+                              <a href="{{project.link}}" target="_blank" class="text-slate-400 hover:text-white transition-colors" title="Visit Site">
+                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                              </a>
+                           }
+                           @if (project.repo) {
+                              <a href="https://{{project.repo}}" target="_blank" class="text-slate-400 hover:text-white transition-colors" title="View Code">
+                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                              </a>
+                           }
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            }
+         </div>
+      </div>
+
+    </div>
+    
+    <footer class="mt-12 text-center text-slate-600 text-sm py-8 border-t border-slate-900">
+      <p>&copy; 2025 Travone Butler. Engineered with Angular v20 & Tailwind.</p>
+    </footer>
+
+  </div>
+</div>
