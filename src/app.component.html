@@ -33,7 +33,7 @@
             width="400" 
             height="400" 
             class="relative w-full h-full object-cover rounded-full border-2 border-slate-700 group-hover:border-teal-400/50 transition-colors duration-300 shadow-2xl bg-slate-900"
-            alt="Travone Butler"
+            alt="Travone Butler headshot"
           >
           <div class="absolute bottom-2 right-2 w-5 h-5 bg-teal-500 rounded-full border-4 border-slate-900 z-10 animate-pulse"></div>
         </div>
@@ -69,16 +69,16 @@
              <div class="w-3 h-3 rounded-full bg-red-500"></div>
              <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
              <div class="w-3 h-3 rounded-full bg-green-500"></div>
-             <span class="ml-3 font-mono text-xs text-slate-500">yung-obi-terminal v1.0.4</span>
+             <span class="ml-3 font-mono text-xs text-slate-500">obi-agentic-suite v1.1.0</span>
            </div>
            <div class="flex items-center gap-2 text-teal-500/50 text-xs font-mono uppercase">
-              <span class="animate-pulse">● Connected to Sidereal Engine</span>
+              <span class="animate-pulse">● Executive Mesh Online</span>
            </div>
         </div>
         
         <div class="p-6 md:p-8 flex-1 bg-gradient-to-br from-slate-900 to-slate-950">
            <h2 class="text-xl text-white font-bold mb-6 flex items-center gap-2">
-             <span class="text-teal-400">>></span> Yung Obi - Sidereal AI Astrologer
+             <span class="text-teal-400">>></span> Agentic Executive Suite
            </h2>
            
            <!-- Stacked Layout: Controls Top, Terminal Bottom -->
@@ -87,7 +87,7 @@
               <!-- Top Section: Controls & Agents -->
               <div class="space-y-6">
                  <p class="text-slate-400 text-sm leading-relaxed max-w-3xl">
-                   Interact with <strong>Yung Obi</strong>. Ask about planetary transits, relationships, or career. The system exclusively calculates using the <strong>Sidereal Zodiac (Lahiri Ayanamsa)</strong>.
+                   Route a mission through the C-suite agents. The CEO aligns outcomes, CTO architects the system, CSO handles risk, and COO orchestrates delivery.
                  </p>
                  
                  <!-- Input -->
@@ -99,7 +99,7 @@
                         [value]="demoPrompt()"
                         type="text" 
                         class="w-full bg-slate-900 text-white px-4 py-3 rounded-l-lg border border-r-0 border-slate-700 focus:outline-none focus:ring-0 placeholder:text-slate-600 font-mono text-sm"
-                        placeholder="e.g. Explain my Mars placement in Sidereal Cancer"
+                        placeholder="e.g. Draft a 30-day AI product launch plan"
                         (keyup.enter)="runAgentSimulation(promptInput.value)"
                         [disabled]="isSimulating()"
                       >
@@ -107,7 +107,7 @@
                         (click)="runAgentSimulation(promptInput.value)"
                         [disabled]="isSimulating()"
                         class="bg-slate-800 hover:bg-slate-700 text-teal-400 px-6 py-3 rounded-r-lg border border-l-0 border-slate-700 font-bold text-sm uppercase tracking-wide transition-colors whitespace-nowrap">
-                        Ask Obi
+                        Run Board
                       </button>
                     </div>
                  </div>
@@ -138,12 +138,12 @@
 
               <!-- Bottom Section: Terminal Output (Full Width) -->
               <div #terminalContainer class="bg-black/90 rounded-lg border border-slate-700 p-4 font-mono text-sm overflow-y-auto h-72 shadow-2xl relative w-full">
-                 <div class="absolute top-2 right-2 px-2 py-0.5 bg-slate-900 rounded text-[10px] text-slate-400 border border-slate-800">Sidereal_Log</div>
+                 <div class="absolute top-2 right-2 px-2 py-0.5 bg-slate-900 rounded text-[10px] text-slate-400 border border-slate-800">Exec_Log</div>
                  <div class="space-y-3 mt-4">
                     @if (simulationLogs().length === 0) {
                       <div class="text-slate-500 italic flex items-center gap-2">
                         <span class="animate-pulse w-2 h-4 bg-teal-500 block"></span>
-                        // Yung Obi Sidereal System ready. Waiting for query...
+                        // Executive council online. Standing by for mission...
                       </div>
                     }
                     @for (log of simulationLogs(); track log.message) {
@@ -176,15 +176,32 @@
       </div>
 
       <!-- 4. Stats/Highlights Block -->
-      <div class="md:col-span-4 lg:col-span-3 glass-card rounded-3xl p-6 flex flex-col justify-between">
-         <h3 class="text-sm font-mono text-slate-500 uppercase tracking-widest mb-4">Key Metrics</h3>
-         <div class="space-y-6">
-            @for (ach of aiAchievements; track ach.title) {
-               <div>
-                  <div class="text-2xl font-black text-white mb-1">{{ach.title.split(' ')[0]}} <span class="text-teal-500">{{ach.title.split(' ').slice(1).join(' ')}}</span></div>
-                  <div class="text-xs text-slate-400">{{ach.desc}}</div>
-               </div>
-            }
+      <div class="md:col-span-4 lg:col-span-3 glass-card rounded-3xl overflow-hidden flex flex-col">
+         <div class="relative h-56 sm:h-64">
+            <img
+              [src]="lifestyleImage"
+              width="800"
+              height="800"
+              loading="lazy"
+              class="w-full h-full object-cover"
+              alt="Travone Butler in car"
+            >
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4">
+               <div class="text-[10px] font-mono text-teal-300/70 uppercase tracking-[0.2em]">Founder Snapshot</div>
+               <div class="text-white font-bold text-lg">Operator + Builder</div>
+            </div>
+         </div>
+         <div class="p-6 flex flex-col justify-between">
+            <h3 class="text-sm font-mono text-slate-500 uppercase tracking-widest mb-4">Key Metrics</h3>
+            <div class="space-y-6">
+               @for (ach of aiAchievements; track ach.title) {
+                  <div>
+                     <div class="text-2xl font-black text-white mb-1">{{ach.title.split(' ')[0]}} <span class="text-teal-500">{{ach.title.split(' ').slice(1).join(' ')}}</span></div>
+                     <div class="text-xs text-slate-400">{{ach.desc}}</div>
+                  </div>
+               }
+            </div>
          </div>
       </div>
 

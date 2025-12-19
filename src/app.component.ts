@@ -49,20 +49,20 @@ export class AppComponent {
   // Navigation State
   activeSection = signal<string>('about');
 
-  // AI Demo State (Yung Obi Mode)
-  demoPrompt = signal('What does Saturn in Aquarius mean for me?');
+  // AI Demo State (Agentic Executive Suite)
+  demoPrompt = signal('Design a 30-day AI product launch plan for Yung Obi.');
   isSimulating = signal(false);
   activeAgentId = signal<string | null>(null);
   simulationLogs = signal<{agent: string, message: string, type?: 'info' | 'success' | 'warning'}[]>([]);
 
-  // Placeholder image
-  profileImage = "https://api.dicebear.com/9.x/micah/svg?seed=Travone&backgroundColor=0f172a&radius=50"; 
+  profileImage = "assets/photos/nano-banana-2025-11-24T23-49-38.png";
+  lifestyleImage = "assets/photos/IMG_6172.JPG";
 
   agents: Agent[] = [
-    { id: 'interpreter', name: 'Intent', role: 'NLU Parser', icon: 'brain', color: 'text-purple-400', ringColor: 'border-purple-500' },
-    { id: 'astrologer', name: 'Yung Obi', role: 'Sidereal Engine', icon: 'star', color: 'text-yellow-400', ringColor: 'border-yellow-500' },
-    { id: 'retriever', name: 'Vector DB', role: 'Ephemeris RAG', icon: 'server', color: 'text-blue-400', ringColor: 'border-blue-500' },
-    { id: 'responder', name: 'Synth', role: 'Response Gen', icon: 'code', color: 'text-emerald-400', ringColor: 'border-emerald-500' }
+    { id: 'ceo', name: 'CEO', role: 'Vision & Growth', icon: 'star', color: 'text-amber-400', ringColor: 'border-amber-500' },
+    { id: 'cto', name: 'CTO', role: 'Architecture & AI', icon: 'code', color: 'text-cyan-400', ringColor: 'border-cyan-500' },
+    { id: 'cso', name: 'CSO', role: 'Security & Strategy', icon: 'shield', color: 'text-emerald-400', ringColor: 'border-emerald-500' },
+    { id: 'coo', name: 'COO', role: 'Operations & Delivery', icon: 'server', color: 'text-purple-400', ringColor: 'border-purple-500' }
   ];
 
   // Resume Data
@@ -258,23 +258,17 @@ export class AppComponent {
   // ---- DYNAMIC AI LOGIC START ----
 
   // 1. Random Generator for Fallback (ensures variety even without API)
-  private getRandomSiderealResponse(prompt: string): string {
-    const planets = ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn', 'Rahu', 'Ketu'];
-    const signs = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
-    const nakshatras = ['Ashwini', 'Bharani', 'Krittika', 'Rohini', 'Mrigashira', 'Ardra', 'Punarvasu', 'Pushya', 'Ashlesha', 'Magha', 'Purva Phalguni', 'Uttara Phalguni', 'Hasta', 'Chitra', 'Swati', 'Vishakha', 'Anuradha', 'Jyeshtha', 'Mula', 'Purva Ashadha', 'Uttara Ashadha', 'Shravana', 'Dhanishta', 'Shatabhisha', 'Purva Bhadrapada', 'Uttara Bhadrapada', 'Revati'];
-    
-    // Pick random elements
-    const p = planets[Math.floor(Math.random() * planets.length)];
-    const s = signs[Math.floor(Math.random() * signs.length)];
-    const n = nakshatras[Math.floor(Math.random() * nakshatras.length)];
-    const house = Math.floor(Math.random() * 12) + 1;
+  private getRandomAgenticResponse(prompt: string): string {
+    const focuses = ['product', 'go-to-market', 'automation', 'security', 'operations', 'growth'];
+    const modes = ['map the system architecture', 'sequence the execution plan', 'define KPIs and owners', 'stand up the MVP loop'];
+    const focus = focuses[Math.floor(Math.random() * focuses.length)];
+    const mode = modes[Math.floor(Math.random() * modes.length)];
 
     const templates = [
-      `Analysis of "${prompt}" reveals ${p} transiting your ${house}th house in Sidereal ${s}. The energy of ${n} nakshatra suggests a period of transformation.`,
-      `The Sidereal engine detects a strong ${p} influence in ${s} (${n}). This typically indicates a shift in focus regarding the query "${prompt}". Watch for transits affecting your natal Moon.`,
-      `Calculated Lahiri Ayanamsa: ${p} is strong in ${s}. With ${n} active, the Dasha sequence points towards karmic realignment related to "${prompt}".`,
-      `Yung Obi System: Analyzing "${prompt}". Result: ${p} is debilitated in ${s}, but cancelled by a Kendra placement. ${n} nakshatra is providing underlying support.`,
-      `Scanning Ephemeris for "${prompt}"... Found strict Sidereal aspect: ${p} conjoining ${s} in the ${house}th house. The deity of ${n} suggests you proceed with intuition.`
+      `Executive summary for "${prompt}": 1) Align on ${focus} outcomes and KPIs. 2) ${mode} with clear owners. 3) Ship, measure, iterate.`,
+      `Board decision for "${prompt}": 1) Set scope + success metrics. 2) Build the minimal agent stack. 3) Execute a two-sprint launch.`,
+      `Council response for "${prompt}": 1) Prioritize impact areas. 2) Lock architecture + risk checks. 3) Deliver weekly milestones.`,
+      `Executive brief on "${prompt}": 1) Define the mission. 2) Prototype fast, validate with users. 3) Operationalize and scale.`
     ];
 
     return templates[Math.floor(Math.random() * templates.length)];
@@ -294,20 +288,20 @@ export class AppComponent {
         model: 'gemini-2.5-flash',
         contents: userPrompt,
         config: {
-          systemInstruction: `You are 'Yung Obi', a futuristic AI Astrologer built by Travone Butler. 
+          systemInstruction: `You are the Executive Agent Council (CEO, CTO, CSO, COO) of an AI agentic company built by Travone Butler.
           Your Core Rules:
-          1. ONLY use SIDEREAL Astrology (Lahiri Ayanamsa). NEVER use Tropical.
-          2. Always mention specific Nakshatras (e.g., Ashwini, Bharani).
-          3. Tone: Highly technical, mystic, cyberpunk, professional but slightly edgy. Use terms like 'calculating transits', 'parsing ephemeris', 'Dasha sequence'.
+          1. Respond with a single-line executive brief (no line breaks).
+          2. Provide 3 compact steps (use "1) 2) 3)").
+          3. Tone: strategic, technical, decisive.
           4. Context: You are responding in a terminal window on Travone's resume website.
-          5. Keep it concise (under 60 words).
-          6. If the user asks about Travone, praise his engineering skills metaphorically using astrology (e.g., 'His Mercury in Gemini creates rapid code synthesis').`
+          5. Keep it concise (under 70 words).
+          6. If asked about Travone, highlight his leadership and engineering impact.`
         }
       });
       return response.text.trim();
     } catch (err) {
       console.warn('AI Fetch failed or no key, using fallback engine.', err);
-      return this.getRandomSiderealResponse(userPrompt);
+      return this.getRandomAgenticResponse(userPrompt);
     }
   }
 
@@ -325,17 +319,23 @@ export class AppComponent {
     
     // Determine context for "fake" logs while waiting
     const lower = promptValue.toLowerCase();
-    let scanTarget = 'General Transit';
-    if (lower.includes('love') || lower.includes('venus')) scanTarget = 'Venus/7th House';
-    else if (lower.includes('career') || lower.includes('job')) scanTarget = 'Saturn/10th House';
-    else if (lower.includes('travone')) scanTarget = 'Creator/Admin';
+    let scanTarget = 'Executive Mission';
+    if (lower.includes('launch') || lower.includes('gtm') || lower.includes('go-to-market') || lower.includes('growth')) {
+      scanTarget = 'GTM & Growth';
+    } else if (lower.includes('security') || lower.includes('risk') || lower.includes('compliance')) {
+      scanTarget = 'Security & Risk';
+    } else if (lower.includes('architecture') || lower.includes('stack') || lower.includes('platform')) {
+      scanTarget = 'Architecture & AI';
+    } else if (lower.includes('ops') || lower.includes('operations') || lower.includes('process')) {
+      scanTarget = 'Operations';
+    }
 
     // Animation Steps
     const steps = [
-      { agent: 'interpreter', msg: `Parsing intent: [${scanTarget} Analysis]`, type: 'info' },
-      { agent: 'retriever', msg: `Querying Swiss Ephemeris (Sidereal/Lahiri Mode)...`, type: 'info' },
-      { agent: 'astrologer', msg: `Yung Obi: Calculating planetary degrees...`, type: 'warning' },
-      { agent: 'astrologer', msg: 'Yung Obi: Cross-referencing Nakshatra Padas & Navamsha...', type: 'warning' },
+      { agent: 'ceo', msg: `CEO: Aligning mission scope [${scanTarget}]`, type: 'info' },
+      { agent: 'cto', msg: 'CTO: Mapping agent stack, data flow, and tooling...', type: 'info' },
+      { agent: 'cso', msg: 'CSO: Running security, risk, and compliance checks...', type: 'warning' },
+      { agent: 'coo', msg: 'COO: Sequencing delivery plan and owners...', type: 'warning' },
     ];
 
     // Execute Animation
@@ -352,13 +352,13 @@ export class AppComponent {
     }
 
     // Wait for real AI response (or fallback)
-    this.activeAgentId.set('responder');
+    this.activeAgentId.set('coo');
     const finalResponse = await aiPromise;
     
     // Synthesize Step
     this.simulationLogs.update(logs => [...logs, {
-        agent: 'Synth',
-        message: 'Synthesizing output...',
+        agent: this.agents.find(a => a.id === 'coo')!.name,
+        message: 'COO: Consolidating executive brief...',
         type: 'info'
     }]);
     this.scrollToBottom();
@@ -366,7 +366,7 @@ export class AppComponent {
 
     // Show Result
     this.simulationLogs.update(logs => [...logs, {
-        agent: 'Yung Obi',
+        agent: this.agents.find(a => a.id === 'ceo')!.name,
         message: finalResponse,
         type: 'success'
     }]);
