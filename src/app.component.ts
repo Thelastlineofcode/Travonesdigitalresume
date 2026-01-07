@@ -1,6 +1,5 @@
 import { Component, ChangeDetectionStrategy, signal, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GoogleGenAI } from "@google/genai";
 
 interface ExperienceItem {
   company: string;
@@ -47,189 +46,137 @@ export class AppComponent {
   @ViewChild('terminalContainer') private terminalContainer!: ElementRef;
 
   // Navigation State
-  activeSection = signal<string>('about');
+  activeSection = signal<string>('overview');
 
-  // AI Demo State (Agentic Executive Suite)
-  demoPrompt = signal('Design a 30-day AI product launch plan for Yung Obi.');
+  // Console State (Engineering Audit)
+  demoPrompt = signal('Audit the architecture of a real-time chat application with focus on scaling and security.');
   isSimulating = signal(false);
   activeAgentId = signal<string | null>(null);
-  simulationLogs = signal<{agent: string, message: string, type?: 'info' | 'success' | 'warning'}[]>([]);
+  simulationLogs = signal<{ agent: string, message: string, type?: 'info' | 'success' | 'warning' }[]>([]);
+
+  private readonly agentEndpoint = '/api/agent';
+  private readonly systemInstruction = `You are an Engineering Assistant Audit Tool.
+          Your Core Rules:
+          1. Respond with a single-line technical brief (no line breaks).
+          2. Provide 3 compact implementation steps (use "1) 2) 3)").
+          3. Tone: professional, technical, optimized.
+          4. Context: You are responding in a development console on a software engineer's digital resume.
+          5. Keep it concise (under 70 words).
+          6. Highlight best practices, efficiency, and clean code.`;
 
   profileImage = "assets/photos/nano-banana-2025-11-24T23-49-38.png";
   lifestyleImage = "assets/photos/IMG_6172.JPG";
 
   agents: Agent[] = [
-    { id: 'ceo', name: 'CEO', role: 'Vision & Growth', icon: 'star', color: 'text-amber-400', ringColor: 'border-amber-500' },
-    { id: 'cto', name: 'CTO', role: 'Architecture & AI', icon: 'code', color: 'text-cyan-400', ringColor: 'border-cyan-500' },
-    { id: 'cso', name: 'CSO', role: 'Security & Strategy', icon: 'shield', color: 'text-emerald-400', ringColor: 'border-emerald-500' },
-    { id: 'coo', name: 'COO', role: 'Operations & Delivery', icon: 'server', color: 'text-purple-400', ringColor: 'border-purple-500' }
+    { id: 'architect', name: 'Architect', role: 'System Design', icon: 'server', color: 'text-amber-400', ringColor: 'border-amber-500' },
+    { id: 'debugger', name: 'Debugger', role: 'Logic Optimization', icon: 'code', color: 'text-cyan-400', ringColor: 'border-cyan-500' },
+    { id: 'frontend', name: 'Frontend', role: 'UI/UX Interface', icon: 'layout', color: 'text-emerald-400', ringColor: 'border-emerald-500' },
+    { id: 'security', name: 'Security', role: 'Audit & Guardrails', icon: 'shield', color: 'text-purple-400', ringColor: 'border-purple-500' }
   ];
 
-  // Resume Data
+  // Studio Data
   profile = {
     name: 'TRAVONE BUTLER',
-    title: 'AI Engineer | Full-Stack Architect | Technical Founder',
+    title: 'Entry-Level Software Engineer',
     location: 'Houston, TX',
-    email: 'Travone.butler@gmail.com', 
-    github: 'github.com/Thelastlineofcode',
-    linkedin: 'linkedin.com/in/travonebutler',
-    summary: `Technical Founder and AI Engineer delivering scalable SaaS architectures and multi-agent automation systems. Creator of 'Yung Obi', a Sidereal Astrology AI. Expert in LLM orchestration (MCP/LangChain), optimizing cloud costs by 34%, and cutting deployment cycles by 90% via automated CI/CD pipelines.`
+    email: 'travone.butler@gmail.com',
+    site: 'github.com/houseofobi', // Placeholder for actual site if different
+    summary: `Entry-level Software Engineer with hands-on experience building and maintaining web applications, backend services, and automation scripts using JavaScript, Python, Rust, and modern frameworks. Strong foundation in writing clean, testable code, working within existing systems, and learning quickly in team-based environments.`
   };
 
   skills: SkillCategory[] = [
     {
-      category: 'AI & Orchestration',
-      icon: 'cpu',
-      items: [
-        'Multi-Agent Systems (Yung Obi Architecture)',
-        'LLM Optimization (Claude, OpenAI)',
-        'Model Context Protocol (MCP)',
-        'RAG & Vector Embeddings',
-        'Autonomous Workflows'
-      ]
-    },
-    {
-      category: 'Full-Stack Engineering',
+      category: 'Languages',
       icon: 'code',
-      items: [
-        'Angular v20, React, Next.js',
-        'TypeScript, Node.js, Python',
-        'PostgreSQL, Supabase, GraphQL',
-        'Tailwind CSS, GSAP Animation',
-        'Real-time Systems (WebSockets)'
-      ]
+      items: ['JavaScript', 'Python', 'Rust', 'SQL']
     },
     {
-      category: 'DevOps & Cloud',
-      icon: 'cloud',
-      items: [
-        'GitHub Actions (CI/CD Pipelines)',
-        'Docker & Containerization',
-        'Vercel & AWS Deployment',
-        'Automated Testing suites',
-        'Infrastructure as Code'
-      ]
+      category: 'Frontend & UI',
+      icon: 'layout',
+      items: ['HTML', 'CSS', 'React', 'Tailwind CSS']
     },
     {
-      category: 'Strategic Leadership',
-      icon: 'users',
-      items: [
-        'SaaS Product Architecture',
-        'Technical Team Mentorship',
-        'Agile/Scrum Management',
-        'Data-Driven Resource Optimization',
-        'Stakeholder Communication'
-      ]
+      category: 'Backend & Data',
+      icon: 'server',
+      items: ['Node.js', 'REST APIs', 'PostgreSQL', 'NoSQL']
+    },
+    {
+      category: 'Tools & Concepts',
+      icon: 'cpu',
+      items: ['Git/GitHub', 'Debugging', 'API Integration', 'Automation Scripts', 'AI-assisted Development']
     }
   ];
 
   experience: ExperienceItem[] = [
     {
-      company: 'House of OBI (Levité)',
-      role: 'Founder & Lead Engineer',
-      period: 'Sept 2024 – Present',
-      description: 'Architected and deployed a production astrology SaaS serving active users.',
+      company: 'Independent Software Projects',
+      role: 'Junior Developer',
+      period: '2023 – 2025',
+      description: 'Built and maintained web applications and automation tools following defined requirements.',
       achievements: [
-        'Engineered sub-second chart calculation engine using optimized TypeScript algorithms.',
-        'Created "Yung Obi", an AI chatbot capable of personalized sidereal astrology readings.',
-        'Achieved 100% uptime via robust GitHub Actions CI/CD pipelines.'
-      ],
-      tech: ['Next.js', 'PostgreSQL', 'GitHub Actions', 'Supabase']
+        'Developed backend endpoints and integrated APIs for data management.',
+        'Wrote automation scripts in Python and Rust to improve workflow efficiency.',
+        'Debugged complex frontend and backend issues to ensure high reliability.',
+        'Managed version control using Git and collaborative PR workflows.'
+      ]
     },
     {
-      company: 'Xcellent1 Lawn Care',
-      role: 'Technical Founder',
-      period: 'June 2023 – Present',
-      description: 'Digitized service operations through custom software solutions.',
+      company: 'Technical Support / Systems Assistance',
+      role: 'Support Specialist',
+      period: '2022 – 2023',
+      description: 'Assisted with software setup, configuration, and troubleshooting.',
       achievements: [
-        'Built a high-conversion waitlist portal capturing 500+ organic leads.',
-        'Secured top-tier local SEO rankings driving organic traffic.',
-        'Implemented automated customer notification systems using Node.js.'
-      ],
-      tech: ['React', 'Node.js', 'Google Maps API']
-    },
-    {
-      company: 'Mula SaaS',
-      role: 'Technical Lead',
-      period: 'March 2024 – Present',
-      description: 'Leading development of an enterprise personality intelligence platform.',
-      achievements: [
-        'Architecting multi-tenant system with Role-Based Access Control (RBAC).',
-        'Implementing real-time scoring algorithms for complex personality frameworks.',
-        'Mentoring dev team on clean architecture and enterprise coding standards.'
-      ],
-      tech: ['GraphQL', 'Supabase', 'React', 'Real-time']
-    },
-    {
-      company: 'TapIn',
-      role: 'Full-Stack Developer',
-      period: 'Aug 2023 – Present',
-      description: 'Developing high-throughput volunteer coordination network.',
-      achievements: [
-        'Optimized PostgreSQL schema to handle complex event-volunteer relationships.',
-        'Engineered mobile-first interface improving user engagement and retention.'
-      ],
-      tech: ['PostgreSQL', 'Tailwind', 'Mobile-First']
-    },
-    {
-      company: 'United States Navy',
-      role: 'Technical Operations',
-      period: '2004 – 2008',
-      description: 'Executed high-stakes technical operations in critical environments.',
-      achievements: [
-        'Delivered precision technical maintenance under extreme pressure.',
-        'Led cross-functional teams in mission-critical scenarios.'
+        'Resolved software issues following established documentation and escalation protocols.',
+        'Provided guidance on application configuration and systems optimization.'
       ]
     }
   ];
 
   aiAchievements = [
     {
-      title: 'Yung Obi Agent',
-      desc: 'Built a specialized Sidereal Astrology AI agent capable of interpreting complex planetary alignments.'
+      title: '7+ Projects',
+      desc: 'Successfully delivered functional web and automation solutions.'
     },
     {
-      title: '34% Cost Reduction',
-      desc: 'Optimized LLM token usage through intelligent caching strategies and prompt engineering.'
+      title: 'Clean Code',
+      desc: 'Expertise in modular architecture and testable patterns.'
     },
     {
-      title: '30% Efficiency Gain',
-      desc: 'Deployed AI-driven delegation pipelines, significantly accelerating development velocity.'
+      title: 'AI Native',
+      desc: 'Leveraging agentic workflows for accelerated development cycles.'
     }
   ];
 
   projects: ProjectItem[] = [
     {
-      name: 'Levité Synastry Scanner',
+      name: 'Dynamic Digital Resume',
       status: 'Live',
-      link: 'https://the-house-of-Obi.vercel.app',
-      description: 'Production astrology SaaS with real-time Vedic calculation engine.',
+      link: 'https://travone-resume.vercel.app',
+      description: 'An interactive, AI-enhanced resume built with Angular 20 and Tailwind CSS.',
       highlights: [
-        'Sub-second Latency',
-        'Sidereal Engine',
-        'Automated CI/CD'
+        'Zoneless Angular',
+        'Interactive AI Agents',
+        'Responsive Design'
       ]
     },
     {
-      name: 'Xcellent1 Waitlist Portal',
-      status: 'Live',
-      link: 'https://xcellent1lawncare.com',
-      description: 'High-conversion lead generation and waitlist management platform.',
+      name: 'Automated Workflow Engine',
+      status: 'Stable',
+      description: 'Python/Rust scripts for automated task management and data processing.',
       highlights: [
-        'Lead Capture',
-        'Local SEO Dominance',
-        'Automated Alerts'
+        'Performance Optimized',
+        'Error Resilience',
+        'Cross-platform'
       ]
     },
     {
-      name: 'House of OBI w/ Yung Obi',
-      status: 'Dev',
-      repo: 'github.com/Thelastlineofcode',
-      description: 'Real-time messaging platform featuring the "Yung Obi" AI Astrologer.',
+      name: 'REST API Integration Layer',
+      status: 'Production',
+      description: 'Scalable backend services for centralized data retrieval and cross-app communication.',
       highlights: [
-        'AI Persona (Yung Obi)',
-        'Supabase Realtime',
-        'Context Awareness'
+        'JWT Auth',
+        'Rate Limiting',
+        'Structured Logging'
       ]
     }
   ];
@@ -242,7 +189,7 @@ export class AppComponent {
     }
   }
 
-  printResume() {
+  printChart() {
     window.print();
   }
 
@@ -255,94 +202,92 @@ export class AppComponent {
     });
   }
 
-  // ---- DYNAMIC AI LOGIC START ----
+  // ---- DYNAMIC ORACLE LOGIC START ----
 
   // 1. Random Generator for Fallback (ensures variety even without API)
-  private getRandomAgenticResponse(prompt: string): string {
-    const focuses = ['product', 'go-to-market', 'automation', 'security', 'operations', 'growth'];
-    const modes = ['map the system architecture', 'sequence the execution plan', 'define KPIs and owners', 'stand up the MVP loop'];
+  private getRandomNumerologyResponse(prompt: string): string {
+    const focuses = ['core', 'name', 'timing', 'compatibility', 'career', 'relationships'];
+    const modes = ['sequence the chart', 'map the digits', 'compare name options', 'surface cycle shifts'];
     const focus = focuses[Math.floor(Math.random() * focuses.length)];
     const mode = modes[Math.floor(Math.random() * modes.length)];
 
     const templates = [
-      `Executive summary for "${prompt}": 1) Align on ${focus} outcomes and KPIs. 2) ${mode} with clear owners. 3) Ship, measure, iterate.`,
-      `Board decision for "${prompt}": 1) Set scope + success metrics. 2) Build the minimal agent stack. 3) Execute a two-sprint launch.`,
-      `Council response for "${prompt}": 1) Prioritize impact areas. 2) Lock architecture + risk checks. 3) Deliver weekly milestones.`,
-      `Executive brief on "${prompt}": 1) Define the mission. 2) Prototype fast, validate with users. 3) Operationalize and scale.`
+      `Chart brief for "${prompt}": 1) Compute ${focus} numbers. 2) ${mode} with clarity. 3) Share a timing window and action steps.`,
+      `Numerology read for "${prompt}": 1) Map core digits. 2) Align name vibration. 3) Set a 7-day focus window.`,
+      `Sidereal insight for "${prompt}": 1) Identify primary numbers. 2) Translate meaning into actions. 3) Mark next cycle shift.`,
+      `Oracle note for "${prompt}": 1) Define the chart focus. 2) Extract key themes. 3) Deliver concise guidance.`
     ];
 
     return templates[Math.floor(Math.random() * templates.length)];
   }
 
-  // 2. Real Gemini API Call
-  private async fetchGeminiResponse(userPrompt: string): Promise<string> {
+  // 2. Service-account-backed oracle call (no client API keys)
+  private async fetchAgentResponse(userPrompt: string): Promise<string> {
     try {
-      // NOTE: process.env['API_KEY'] is used as per instructions. 
-      // In a real deployed app, this would be an environment variable.
-      // If it's missing, we fall back gracefully.
-      const apiKey = process.env['API_KEY'];
-      if (!apiKey) throw new Error("No API Key found");
-
-      const ai = new GoogleGenAI({ apiKey });
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: userPrompt,
-        config: {
-          systemInstruction: `You are the Executive Agent Council (CEO, CTO, CSO, COO) of an AI agentic company built by Travone Butler.
-          Your Core Rules:
-          1. Respond with a single-line executive brief (no line breaks).
-          2. Provide 3 compact steps (use "1) 2) 3)").
-          3. Tone: strategic, technical, decisive.
-          4. Context: You are responding in a terminal window on Travone's resume website.
-          5. Keep it concise (under 70 words).
-          6. If asked about Travone, highlight his leadership and engineering impact.`
-        }
+      const response = await fetch(this.agentEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          prompt: userPrompt,
+          systemInstruction: this.systemInstruction
+        })
       });
-      return response.text.trim();
+      if (!response.ok) {
+        throw new Error(`Agent API error: ${response.status}`);
+      }
+
+      const data = await response.json() as { text?: string };
+      if (!data?.text) {
+        throw new Error('Agent API response missing text');
+      }
+
+      return data.text.trim();
     } catch (err) {
-      console.warn('AI Fetch failed or no key, using fallback engine.', err);
-      return this.getRandomAgenticResponse(userPrompt);
+      console.warn('Oracle fetch failed, using fallback engine.', err);
+      return this.getRandomNumerologyResponse(userPrompt);
     }
   }
 
   // 3. Main Orchestration
-  async runAgentSimulation(promptValue: string) {
+  async runNumerologySimulation(promptValue: string) {
     if (this.isSimulating() || !promptValue.trim()) return;
-    
+
     this.demoPrompt.set(promptValue);
     this.isSimulating.set(true);
     this.simulationLogs.set([]);
     this.activeAgentId.set(null);
 
-    // Start fetching AI response in background (Parallel Execution)
-    const aiPromise = this.fetchGeminiResponse(promptValue);
-    
+    // Start fetching oracle response in background (Parallel Execution)
+    const aiPromise = this.fetchAgentResponse(promptValue);
+
     // Determine context for "fake" logs while waiting
     const lower = promptValue.toLowerCase();
-    let scanTarget = 'Executive Mission';
-    if (lower.includes('launch') || lower.includes('gtm') || lower.includes('go-to-market') || lower.includes('growth')) {
-      scanTarget = 'GTM & Growth';
-    } else if (lower.includes('security') || lower.includes('risk') || lower.includes('compliance')) {
-      scanTarget = 'Security & Risk';
-    } else if (lower.includes('architecture') || lower.includes('stack') || lower.includes('platform')) {
-      scanTarget = 'Architecture & AI';
-    } else if (lower.includes('ops') || lower.includes('operations') || lower.includes('process')) {
-      scanTarget = 'Operations';
+    let scanTarget = 'Codebase Audit';
+    if (lower.includes('ui') || lower.includes('frontend') || lower.includes('interface')) {
+      scanTarget = 'Frontend Logic';
+    } else if (lower.includes('api') || lower.includes('backend') || lower.includes('server')) {
+      scanTarget = 'Backend Architecture';
+    } else if (lower.includes('security') || lower.includes('audit')) {
+      scanTarget = 'Security Guardrails';
+    } else if (lower.includes('sql') || lower.includes('database')) {
+      scanTarget = 'Data Schema';
     }
 
     // Animation Steps
     const steps = [
-      { agent: 'ceo', msg: `CEO: Aligning mission scope [${scanTarget}]`, type: 'info' },
-      { agent: 'cto', msg: 'CTO: Mapping agent stack, data flow, and tooling...', type: 'info' },
-      { agent: 'cso', msg: 'CSO: Running security, risk, and compliance checks...', type: 'warning' },
-      { agent: 'coo', msg: 'COO: Sequencing delivery plan and owners...', type: 'warning' },
+      { agent: 'architect', msg: `Architect: Analyzing requirements for [${scanTarget}]`, type: 'info' },
+      { agent: 'debugger', msg: 'Debugger: Validating core logic and dependency tree...', type: 'info' },
+      { agent: 'frontend', msg: 'Frontend: Optimizing interface hooks and user flow...', type: 'warning' },
+      { agent: 'security', msg: 'Security: Auditing guardrails and performance bounds...', type: 'warning' },
     ];
 
     // Execute Animation
     for (const step of steps) {
       this.activeAgentId.set(step.agent);
       await new Promise(r => setTimeout(r, 800)); // Visual delay
-      
+
       this.simulationLogs.update(logs => [...logs, {
         agent: this.agents.find(a => a.id === step.agent)!.name,
         message: step.msg,
@@ -351,24 +296,24 @@ export class AppComponent {
       this.scrollToBottom();
     }
 
-    // Wait for real AI response (or fallback)
-    this.activeAgentId.set('coo');
+    // Wait for real oracle response (or fallback)
+    this.activeAgentId.set('security');
     const finalResponse = await aiPromise;
-    
+
     // Synthesize Step
     this.simulationLogs.update(logs => [...logs, {
-        agent: this.agents.find(a => a.id === 'coo')!.name,
-        message: 'COO: Consolidating executive brief...',
-        type: 'info'
+      agent: this.agents.find(a => a.id === 'security')!.name,
+      message: 'Security: Finalizing implementation brief...',
+      type: 'info'
     }]);
     this.scrollToBottom();
     await new Promise(r => setTimeout(r, 600));
 
     // Show Result
     this.simulationLogs.update(logs => [...logs, {
-        agent: this.agents.find(a => a.id === 'ceo')!.name,
-        message: finalResponse,
-        type: 'success'
+      agent: this.agents.find(a => a.id === 'architect')!.name,
+      message: finalResponse,
+      type: 'success'
     }]);
     this.scrollToBottom();
 

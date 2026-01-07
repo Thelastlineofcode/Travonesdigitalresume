@@ -15,6 +15,6 @@ View your app in AI Studio: https://ai.studio/apps/drive/1G2Z6fsSlxet7dLo2biSogz
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+2. Ensure your serverless endpoint is configured with a service account (no client API keys). The UI calls `POST /api/agent` with `{ "prompt": "...", "systemInstruction": "..." }` and expects `{ "text": "..." }`.
 3. Run the app:
    `npm run dev`
